@@ -18,9 +18,15 @@ class IusersServiceProvider extends ServiceProvider
         $this->app->make('Selfreliance\Iusers\UsersController');
         $this->loadViewsFrom(__DIR__.'/views', 'iusers');
         
-        $this->publishes([
-            __DIR__.'/views' => resource_path('views/vendor/iusers'),
-        ]);
+
+        //Публикуем view
+        // $this->publishes([
+        //     __DIR__.'/views' => resource_path('views/vendor/iusers'),
+        // ]);
+
+
+        //Миграция
+        $this->loadMigrationsFrom(__DIR__.'/migrations');
     }
 
     /**

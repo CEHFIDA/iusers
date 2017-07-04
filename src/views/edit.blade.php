@@ -8,24 +8,32 @@
             <div class="card">
                 <div class="card-block"> 
                     <small class="text-muted">Email address </small>
-                    <h6>{{$user->email}}</h6>
+                    <h6>{{$edituser->email}}</h6>
                     <small class="text-muted">Дата регистрации </small>
-                    <h6>{{$user->created_at}}</h6>
+                    <h6>{{$edituser->created_at}}</h6>
                     <small class="text-muted">Последнее обновление профиля </small>
-                    <h6>{{$user->updated_at}}</h6>
+                    <h6>{{$edituser->updated_at}}</h6>
+                    @if(count($LoginLogs) > 0)
+                        <small class="text-muted">Последний вход </small>
+                        <h6>{{$LoginLogs[0]->created_at}}</h6>
+                    @endif
                 </div>
             </div>
             <div class="col-sm-12">
-                <button class="btn btn-success">Войти под пользователем</button>
+                <form action="{{ route('AdminUsersLoginWith', $edituser->id) }}" target="_blank" method="POST">
+                    {{ csrf_field() }}
+                    <button class="btn btn-success">Войти под пользователем</button>
+                </form>
             </div>
         </div>
         <!-- Column -->
         <!-- Column -->
-        <div class="col-lg-8 col-xlg-9 col-md-7">
+        <div class="col-lg-8 col-xlg-9 col-md-7"> 
             <div class="card">
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs profile-tab" role="tablist">
                     <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#settings" role="tab">Настройки</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#loginlog" role="tab">Логи авторизации</a> </li>
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
@@ -41,17 +49,17 @@
                                     </div>
                                 @endforeach
                             @endif
-                            <form action="{{route('AdminUsersUpdate', $user->id)}}" method="POST" class="form-horizontal form-material">
+                            <form action="{{route('AdminUsersUpdate', $edituser->id)}}" method="POST" class="form-horizontal form-material">
                                 <div class="form-group">
                                     <label for="name" class="col-md-12">Имя</label>
                                     <div class="col-md-12">
-                                        <input type="text" name="name" id="name" value="{{$user->name}}" placeholder="" class="form-control form-control-line">
+                                        <input type="text" name="name" id="name" value="{{$edituser->name}}" placeholder="" class="form-control form-control-line">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="email" class="col-md-12">Email</label>
                                     <div class="col-md-12">
-                                        <input type="text" value="{{$user->email}}" placeholder="admin@admin.com" class="form-control form-control-line" name="email" id="email">
+                                        <input type="text" value="{{$edituser->email}}" placeholder="admin@admin.com" class="form-control form-control-line" name="email" id="email">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -68,6 +76,33 @@
                                     </div>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="loginlog" role="tabpanel">
+                        <div class="card-block">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Дата</th>
+                                            <th>Браузер</th>
+                                            <th>IP</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($LoginLogs as $user)
+                                            <tr>
+                                                <td>{{$user->id}}</td>
+                                                <td>{{$user->created_at}}</td>
+                                                <td>{{$user->browser}}</td>
+                                                <td>{{$user->ip}}</td>       
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

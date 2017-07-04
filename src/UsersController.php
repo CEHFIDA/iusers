@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\User;
+use Illuminate\Support\Facades\Auth;
+
+use Selfreliance\Iusers\Models\UsersLoginLog;
+
 class UsersController extends Controller
 {
 
@@ -19,7 +23,9 @@ class UsersController extends Controller
     {
     	$user = User::findOrFail($id);
     	// dd($user);
-    	return view('iusers::edit')->with(["user"=>$user]);
+
+        $LoginLogs = UsersLoginLog::where("user_id", $id)->orderBy('id', 'desc')->limit(10)->get();
+    	return view('iusers::edit')->with(["edituser"=>$user, "LoginLogs"=>$LoginLogs]);
     }
 
     public function update($id, Request $request)
@@ -41,5 +47,10 @@ class UsersController extends Controller
     	$ModelUser = User::findOrFail($id);
     	$ModelUser->delete();
     	return redirect()->route('AdminUsers')->with('status', 'Пользователь удален!');
+    }
+
+    public function loginwith($id){
+        Auth::loginUsingId($id);
+        return redirect('/');
     }
 }
