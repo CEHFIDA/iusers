@@ -1,0 +1,6 @@
+{
+  "route": "AdminUsers",
+  "description": "Пользователи",
+  "icon": "mdi mdi-account-convert",
+  "config": "users.roles"
+}
