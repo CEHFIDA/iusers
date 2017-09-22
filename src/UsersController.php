@@ -17,8 +17,7 @@ class UsersController extends Controller
     public function index()
     {
     	$users = User::orderBy('id', 'desc')->paginate(10);
-	$roles = DB::table('roles')->get();
-        return view('iusers::home')->with(["users"=>$users,"Roles"=>$roles]);
+        return view('iusers::home')->with(["users"=>$users]);
     }
 
     public function edit($id)
@@ -27,7 +26,8 @@ class UsersController extends Controller
     	// dd($user);
 
         $LoginLogs = UsersLoginLog::where("user_id", $id)->orderBy('id', 'desc')->limit(10)->get();
-    	return view('iusers::edit')->with(["edituser"=>$user, "LoginLogs"=>$LoginLogs]);
+	$roles = DB::table('roles')->get();
+    	return view('iusers::edit')->with(["edituser"=>$user, "LoginLogs"=>$LoginLogs, "Roles"=>$roles]);
     }
 
     public function update($id, Request $request)
