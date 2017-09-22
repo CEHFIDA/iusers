@@ -68,13 +68,23 @@
                                         <input type="password" id="new_password" name="new_password" value="" class="form-control form-control-line">
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label for="role" class="col-md-12">Изменить роль</label>
+                                    <div class="col-md-12">
+                                        @foreach($Roles as $Role)
+                                            <select class="custom-select col-12" id="role" name="selected_role">
+                                                <option value = "{{ $Role->id }}"> {{ $Role->name }}</option>
+                                            </select>
+                                        @endforeach
+                                    </div>
+                                </div>
                                 {{ csrf_field() }}
                                 {{ method_field('PUT') }}
                                 <div class="form-group">
                                     <div class="col-sm-12">
                                         <button class="btn btn-success">Обновить профиль</button>
                                     </div>
-                                </div>
+                               </div>
                             </form>
                         </div>
                     </div>
