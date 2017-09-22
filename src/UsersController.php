@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\User;
+use DB;
 use Illuminate\Support\Facades\Auth;
 
 use Selfreliance\Iusers\Models\UsersLoginLog;
@@ -16,7 +17,8 @@ class UsersController extends Controller
     public function index()
     {
     	$users = User::orderBy('id', 'desc')->paginate(10);
-        return view('iusers::home')->with(["users"=>$users]);
+	$roles = DB::table('roles')->get();
+        return view('iusers::home')->with(["users"=>$users,"Roles"=>$roles]);
     }
 
     public function edit($id)
