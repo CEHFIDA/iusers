@@ -42,6 +42,9 @@ class UsersController extends Controller
     	$ModelUser->email = $request->input('email');
     	$ModelUser->save();
 
+    	$ModelUser->detachAllRoles();
+        $ModelUser->attachRole($request->input('selected_role'));
+
     	return redirect()->route('AdminUsersEdit', ["id"=>$id])->with('status', 'Профиль обновлен!');
     }
 

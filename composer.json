@@ -1,7 +1,7 @@
 {
     "name": "selfreliance/iusers",
     "type": "library",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "description": "List of users for adminamazing",
     "keywords": ["admin", "laravel"],
     "homepage": "https://github.com/selfrelianceme/iusers",
@@ -12,6 +12,13 @@
             "email": "vladwebkit@gmail.com"
         }
     ],
+    "extra": {
+      	"laravel":{
+          	"providers": [
+           	 	"Selfreliance\\Iusers\\IusersServiceProvider"
+          	]
+      }
+ 	},
     "require": {
         "php": ">=5.3.0"
     },
