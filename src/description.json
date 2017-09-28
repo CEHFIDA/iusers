@@ -2,6 +2,6 @@
   "route": "AdminUsers",
   "description": "Пользователи",
   "icon": "mdi mdi-account-convert",
-  "config": "users.roles",
+  "prefix": "admin/users",
   "subMenuUsers": true
 }
