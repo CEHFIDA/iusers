@@ -44,10 +44,11 @@ class UsersController extends Controller
     	$ModelUser->email = $request->input('email');
     	$ModelUser->save();
 
+
+        $ModelUser->detachAllRoles();
         if($request['selected_role'] !== 'not_selected')
         {
-            $ModelUser->detachAllRoles();
-            $ModelUser->attachRole($request->input('selected_role'));
+        	$ModelUser->attachRole($request->input('selected_role'));
         }
 
     	return redirect()->route('AdminUsersEdit', ["id"=>$id])->with('status', 'Профиль обновлен!');
@@ -62,5 +63,19 @@ class UsersController extends Controller
     public function loginwith($id){
         \Auth::loginUsingId($id);
         return redirect('/');
+    }
+
+    public function searchUsers(Request $request) {
+
+        $user = User::where('name', '=', $request->input('userName'))->first();
+        if($user) {
+
+            $LoginLogs = UsersLoginLog::where("user_id", $user->id)->orderBy('id', 'desc')->limit(10)->get();
+            $roles = \DB::table('roles')->get();
+
+            return view('iusers::edit')->with(["edituser"=>$user, "LoginLogs"=>$LoginLogs, "Roles"=>$roles]);
+        }else {
+            return redirect()->route('AdminUsers')->with('status', 'Пользователь не найден!');
+        }
     }
 }
