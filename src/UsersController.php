@@ -6,13 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\User;
-use DB;
-use Illuminate\Support\Facades\Auth;
 
 use Selfreliance\Iusers\Models\UsersLoginLog;
 
 class UsersController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('CheckAccess');
+    }    
 
     public function index()
     {
@@ -26,7 +28,7 @@ class UsersController extends Controller
     	// dd($user);
 
         $LoginLogs = UsersLoginLog::where("user_id", $id)->orderBy('id', 'desc')->limit(10)->get();
-	$roles = DB::table('roles')->get();
+	    $roles = \DB::table('roles')->get();
     	return view('iusers::edit')->with(["edituser"=>$user, "LoginLogs"=>$LoginLogs, "Roles"=>$roles]);
     }
 
@@ -58,7 +60,7 @@ class UsersController extends Controller
     }
 
     public function loginwith($id){
-        Auth::loginUsingId($id);
+        \Auth::loginUsingId($id);
         return redirect('/');
     }
 }
