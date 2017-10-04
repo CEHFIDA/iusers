@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['prefix' => 'admin/users', 'middleware' => 'web'], function() {
+Route::group(['prefix' => config('adminamazing.path').'/users', 'middleware' => 'web'], function() {
 	Route::get('/', 'selfreliance\iusers\UsersController@index')->name('AdminUsers');
 	Route::get('/{id}', 'selfreliance\iusers\UsersController@edit')->name('AdminUsersEdit');
 	Route::put('/{id}', 'selfreliance\iusers\UsersController@update')->name('AdminUsersUpdate');
