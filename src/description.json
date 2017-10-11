@@ -1,7 +1,4 @@
 {
-  "route": "AdminUsers",
-  "description": "Пользователи",
-  "icon": "mdi mdi-account-convert",
-  "prefix": "admin/users",
-  "subMenuUsers": true
+  "package": "users",
+  "name": "Пользователи"
 }
