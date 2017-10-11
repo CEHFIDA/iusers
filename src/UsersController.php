@@ -7,15 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\User;
 
-use Selfreliance\Iusers\Models\UsersLoginLog;
+use Selfreliance\Iusers\Models\UsersLoginLogs;
 
 class UsersController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('CheckAccess');
-    }    
-
     public function index()
     {
     	$users = User::orderBy('id', 'desc')->paginate(10);
@@ -27,7 +22,7 @@ class UsersController extends Controller
     	$user = User::findOrFail($id);
     	// dd($user);
 
-        $LoginLogs = UsersLoginLog::where("user_id", $id)->orderBy('id', 'desc')->limit(10)->get();
+        $LoginLogs = UsersLoginLogs::where("user_id", $id)->orderBy('id', 'desc')->limit(10)->get();
 	    $roles = \DB::table('roles')->get();
     	return view('iusers::edit')->with(["edituser"=>$user, "LoginLogs"=>$LoginLogs, "Roles"=>$roles]);
     }
