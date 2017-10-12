@@ -20,8 +20,7 @@ class UsersController extends Controller
     public function edit($id)
     {
     	$user = User::findOrFail($id);
-        $id_role = \DB::table('role_user')->where('user_id', \Auth::id())->value('role_id');
-        $admin = \DB::table('roles')->where('id', $id_role)->first();
+        $admin = \Auth::User()->getRoles();
 
         $LoginLogs = UsersLoginLogs::where("user_id", $id)->orderBy('id', 'desc')->limit(10)->get();
 	    $roles = \DB::table('roles')->get();
@@ -32,21 +31,12 @@ class UsersController extends Controller
                 $list_roles .= '<option value = "'.$role->id.'" selected> '.$role->name.'</option>';
             }else $list_roles .= '<option value = "'.$role->id.'"> '.$role->name.'</option>';                        
         }
-        $edit_role = '';
-        if(in_array('adminrole', json_decode($admin->accessible_pages))){
-            $edit_role = '
-                <div class="form-group">
-                    <label for="role" class="col-md-12">Изменить роль</label>
-                    <div class="col-md-12">
-                        <select class="custom-select col-12" id="role" name="selected_role">
-                            <option value = "not_selected">Не выбрано</option>
-                            '.$list_roles.'
-                        </select>
-                    </div>
-                </div>
-            ';
-        }
-    	return view('iusers::edit')->with(["edituser"=>$user, "LoginLogs"=>$LoginLogs, "edit_role"=>$edit_role]);
+    	return view('iusers::edit')->with([
+            "edituser"=>$user, 
+            "LoginLogs"=>$LoginLogs, 
+            "list_roles"=>$list_roles,
+            "accessible"=>json_decode($admin[0]->accessible_pages)
+        ]);
     }
 
     public function update($id, Request $request)

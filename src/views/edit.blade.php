@@ -68,7 +68,17 @@
                                         <input type="password" id="new_password" name="new_password" value="" class="form-control form-control-line">
                                     </div>
                                 </div>
-                                {!! $edit_role !!}
+                                @if(in_array('adminrole', $accessible))
+                                <div class="form-group">
+                                    <label for="role" class="col-md-12">Изменить роль</label>
+                                    <div class="col-md-12">
+                                        <select class="custom-select col-12" id="role" name="selected_role">
+                                            <option value = "not_selected">Не выбрано</option>
+                                            {{!! $list_roles !!}}
+                                        </select>
+                                    </div>
+                                </div>
+                                @endif                    
                                 {{ csrf_field() }}
                                 {{ method_field('PUT') }}
                                 <div class="form-group">
