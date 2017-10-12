@@ -20,6 +20,9 @@ class UsersController extends Controller
     public function edit($id)
     {
     	$user = User::findOrFail($id);
+        $id_role = \DB::table('role_user')->where('user_id', \Auth::id())->value('role_id');
+        $admin = \DB::table('roles')->where('id', $id_role)->first();
+
         $LoginLogs = UsersLoginLogs::where("user_id", $id)->orderBy('id', 'desc')->limit(10)->get();
 	    $roles = \DB::table('roles')->get();
         $list_roles = '';
@@ -27,11 +30,10 @@ class UsersController extends Controller
         {
             if($user->isRole($role->slug)){
                 $list_roles .= '<option value = "'.$role->id.'" selected> '.$role->name.'</option>';
-                $accessible = json_decode($role->accessible_pages);
-            }else $list_roles .= '<option value = "'.$role->id.'"> '.$role->name.'</option>';                               
+            }else $list_roles .= '<option value = "'.$role->id.'"> '.$role->name.'</option>';                        
         }
         $edit_role = '';
-        if(in_array('adminrole', $accessible)){
+        if(in_array('adminrole', json_decode($admin->accessible_pages))){
             $edit_role = '
                 <div class="form-group">
                     <label for="role" class="col-md-12">Изменить роль</label>
