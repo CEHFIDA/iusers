@@ -1,4 +1,5 @@
 {
   "package": "users",
-  "name": "Пользователи"
+  "name": "Пользователи",
+  "icon": "mdi mdi-account-multiple"
 }

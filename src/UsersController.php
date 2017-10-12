@@ -20,11 +20,31 @@ class UsersController extends Controller
     public function edit($id)
     {
     	$user = User::findOrFail($id);
-    	// dd($user);
-
         $LoginLogs = UsersLoginLogs::where("user_id", $id)->orderBy('id', 'desc')->limit(10)->get();
 	    $roles = \DB::table('roles')->get();
-    	return view('iusers::edit')->with(["edituser"=>$user, "LoginLogs"=>$LoginLogs, "Roles"=>$roles]);
+        $list_roles = '';
+        foreach($roles as $role)
+        {
+            if($user->isRole($role->slug)){
+                $list_roles .= '<option value = "'.$role->id.'" selected> '.$role->name.'</option>';
+                $accessible = json_decode($role->accessible_pages);
+            }else $list_roles .= '<option value = "'.$role->id.'"> '.$role->name.'</option>';                               
+        }
+        $edit_role = '';
+        if(in_array('adminrole', $accessible)){
+            $edit_role = '
+                <div class="form-group">
+                    <label for="role" class="col-md-12">Изменить роль</label>
+                    <div class="col-md-12">
+                        <select class="custom-select col-12" id="role" name="selected_role">
+                            <option value = "not_selected">Не выбрано</option>
+                            '.$list_roles.'
+                        </select>
+                    </div>
+                </div>
+            ';
+        }
+    	return view('iusers::edit')->with(["edituser"=>$user, "LoginLogs"=>$LoginLogs, "edit_role"=>$edit_role]);
     }
 
     public function update($id, Request $request)

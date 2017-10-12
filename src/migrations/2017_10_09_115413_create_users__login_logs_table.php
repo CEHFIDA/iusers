@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableUserLoginLog extends Migration
+class CreateUsersLoginLogsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class CreateTableUserLoginLog extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('users_login_logs')) {
-            Schema::create('users_login_logs', function (Blueprint $table) {
+        if(!Schema::hasTable('users__login_logs')) {
+            Schema::create('users__login_logs', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('user_id');
                 $table->text('browser');
@@ -31,7 +31,6 @@ class CreateTableUserLoginLog extends Migration
      */
     public function down()
     {
-        //
-        Schema::dropIfExists('users_login_logs');
+        Schema::dropIfExists('users__login_logs');
     }
 }

@@ -68,25 +68,7 @@
                                         <input type="password" id="new_password" name="new_password" value="" class="form-control form-control-line">
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="role" class="col-md-12">Изменить роль</label>
-                                    <div class="col-md-12">
-                                        <select class="custom-select col-12" id="role" name="selected_role">
-                                        <option value = "not_selected">Не выбрано</option>
-                                        @php 
-                                            use App\User;
-                                            $user = User::findOrFail($edituser->id) 
-                                        @endphp
-                                        @foreach($Roles as $Role)
-                                            @if($user->isRole($Role->slug))
-                                                <option value = "{{ $Role->id }}" selected> {{ $Role->name }}</option>
-                                            @else                                        
-                                                <option value = "{{ $Role->id }}"> {{ $Role->name }}</option>
-                                            @endif
-                                        @endforeach
-                                        </select>
-                                    </div>
-                                </div>
+                                {!! $edit_role !!}
                                 {{ csrf_field() }}
                                 {{ method_field('PUT') }}
                                 <div class="form-group">
