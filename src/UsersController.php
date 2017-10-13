@@ -11,9 +11,16 @@ use Selfreliance\Iusers\Models\UsersLoginLogs;
 
 class UsersController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-    	$users = User::orderBy('id', 'desc')->paginate(10);
+    	$keyword = $request->input("searchKey");
+    	$users = User::where(function($query) use ($keyword) {
+    		if($keyword != ''){
+	    		$query->where('id', 'LIKE', "%$keyword%")
+	    			->orWhere('name', 'LIKE', "%$keyword%")
+	    			->orWhere('email', 'LIKE', "%$keyword%");
+    		}
+    	})->orderBy('id', 'desc')->paginate(10);
         return view('iusers::home')->with(["users"=>$users]);
     }
 
@@ -70,19 +77,5 @@ class UsersController extends Controller
     public function loginwith($id){
         \Auth::loginUsingId($id);
         return redirect('/');
-    }
-
-    public function searchUsers(Request $request) {
-
-        $user = User::where('name', '=', $request->input('userName'))->first();
-        if($user) {
-
-            $LoginLogs = UsersLoginLog::where("user_id", $user->id)->orderBy('id', 'desc')->limit(10)->get();
-            $roles = \DB::table('roles')->get();
-
-            return view('iusers::edit')->with(["edituser"=>$user, "LoginLogs"=>$LoginLogs, "Roles"=>$roles]);
-        }else {
-            return redirect()->route('AdminUsers')->with('status', 'Пользователь не найден!');
-        }
     }
 }
