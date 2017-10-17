@@ -32,9 +32,10 @@ class UsersController extends Controller
         $LoginLogs = UsersLoginLogs::where("user_id", $id)->orderBy('id', 'desc')->limit(10)->get();
 	    $roles = \DB::table('roles')->get();
         $list_roles = '';
+
         foreach($roles as $role)
         {
-            if($user->hasRole($admin->id)){
+            if($role->id == $admin->id){
                 $list_roles .= '<option value = "'.$role->id.'" selected> '.$role->name.'</option>';
             }else $list_roles .= '<option value = "'.$role->id.'"> '.$role->name.'</option>';                        
         }
@@ -58,12 +59,8 @@ class UsersController extends Controller
     	$ModelUser->email = $request->input('email');
     	$ModelUser->save();
 
-
-        $ModelUser->detachAllRoles();
-        if($request['selected_role'] !== 'not_selected')
-        {
-        	$ModelUser->attachRole($request->input('selected_role'));
-        }
+        if($request['selected_role'] !== 'not_selected') $ModelUser->attachRole($request->input('selected_role'));
+        else $ModelUser->detachRole($ModelUser->role_id);
 
     	return redirect()->route('AdminUsersEdit', ["id"=>$id])->with('status', 'Профиль обновлен!');
     }
