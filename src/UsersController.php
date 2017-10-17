@@ -60,7 +60,7 @@ class UsersController extends Controller
     	$ModelUser->save();
 
         if($request['selected_role'] !== 'not_selected') $ModelUser->attachRole($request->input('selected_role'));
-        else $ModelUser->detachRole($ModelUser->role_id);
+        else $ModelUser->detachRole();
 
     	return redirect()->route('AdminUsersEdit', ["id"=>$id])->with('status', 'Профиль обновлен!');
     }
