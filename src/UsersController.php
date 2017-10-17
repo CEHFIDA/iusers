@@ -35,7 +35,7 @@ class UsersController extends Controller
 
         foreach($roles as $role)
         {
-            if($role->id == $admin->id){
+            if($user->role_id == $role->id){
                 $list_roles .= '<option value = "'.$role->id.'" selected> '.$role->name.'</option>';
             }else $list_roles .= '<option value = "'.$role->id.'"> '.$role->name.'</option>';                        
         }
