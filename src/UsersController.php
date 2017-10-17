@@ -27,14 +27,14 @@ class UsersController extends Controller
     public function edit($id)
     {
     	$user = User::findOrFail($id);
-        $admin = \Auth::User()->getRoles();
+        $admin = \Auth::User()->getRole(\Auth::User()->role_id);
 
         $LoginLogs = UsersLoginLogs::where("user_id", $id)->orderBy('id', 'desc')->limit(10)->get();
 	    $roles = \DB::table('roles')->get();
         $list_roles = '';
         foreach($roles as $role)
         {
-            if($user->isRole($role->slug)){
+            if($user->hasRole($admin->id)){
                 $list_roles .= '<option value = "'.$role->id.'" selected> '.$role->name.'</option>';
             }else $list_roles .= '<option value = "'.$role->id.'"> '.$role->name.'</option>';                        
         }
@@ -42,7 +42,7 @@ class UsersController extends Controller
             "edituser"=>$user, 
             "LoginLogs"=>$LoginLogs, 
             "list_roles"=>$list_roles,
-            "accessible"=>json_decode($admin[0]->accessible_pages)
+            "accessible"=>json_decode($admin->accessible_pages)
         ]);
     }
 
@@ -68,8 +68,12 @@ class UsersController extends Controller
     	return redirect()->route('AdminUsersEdit', ["id"=>$id])->with('status', 'Профиль обновлен!');
     }
 
-    public function destroy($id){
-    	$ModelUser = User::findOrFail($id);
+    public function destroy(Request $request){
+        $this->validate($request, [
+            'id' => 'required'
+        ]);
+
+    	$ModelUser = User::findOrFail($request->input('id'));
     	$ModelUser->delete();
     	return redirect()->route('AdminUsers')->with('status', 'Пользователь удален!');
     }
