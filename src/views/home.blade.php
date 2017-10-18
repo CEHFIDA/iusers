@@ -12,6 +12,7 @@
                     <div class="modal-body">Вы точно хотите удалить пользователя?</div>
                     <div class="modal-footer">
                         {{ method_field('DELETE') }}
+                        {{ csrf_field() }}
                         <input type="hidden" name="id" value="">
                         <button type="submit" class="btn btn-danger">Удалить</button>
                     </div>
