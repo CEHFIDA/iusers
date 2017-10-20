@@ -21,6 +21,7 @@ class UsersController extends Controller
 	    			->orWhere('email', 'LIKE', "%$keyword%");
     		}
     	})->orderBy('id', 'desc')->paginate(10);
+        $users->appends(['searchKey' => $keyword]);
         return view('iusers::home')->with(["users"=>$users]);
     }
 
