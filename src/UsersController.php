@@ -3,10 +3,8 @@
 namespace Selfreliance\Iusers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use App\User;
-
+use Illuminate\Http\Request;
 use Selfreliance\Iusers\Models\UsersLoginLogs;
 
 class UsersController extends Controller
@@ -21,7 +19,9 @@ class UsersController extends Controller
 	    			->orWhere('email', 'LIKE', "%$keyword%");
     		}
     	})->orderBy('id', 'desc')->paginate(10);
+        
         $users->appends(['searchKey' => $keyword]);
+
         return view('iusers::home')->with(["users"=>$users]);
     }
 
@@ -36,10 +36,13 @@ class UsersController extends Controller
 
         foreach($roles as $role)
         {
-            if($user->role_id == $role->id){
+            if($user->role_id == $role->id)
+            {
                 $list_roles .= '<option value = "'.$role->id.'" selected> '.$role->name.'</option>';
-            }else $list_roles .= '<option value = "'.$role->id.'"> '.$role->name.'</option>';                        
+            }
+            else $list_roles .= '<option value = "'.$role->id.'"> '.$role->name.'</option>';                        
         }
+
     	return view('iusers::edit')->with([
             "edituser"=>$user, 
             "LoginLogs"=>$LoginLogs, 
@@ -61,23 +64,23 @@ class UsersController extends Controller
     	$ModelUser->save();
 
         if($request['selected_role'] !== 'not_selected') $ModelUser->attachRole($request->input('selected_role'));
-        else $ModelUser->detachRole();
+        else $ModelUser->detachRole($ModelUser->role_id);
 
     	return redirect()->route('AdminUsersEdit', ["id"=>$id])->with('status', 'Профиль обновлен!');
     }
 
-    public function destroy(Request $request){
-        $this->validate($request, [
-            'id' => 'required'
-        ]);
-
-    	$ModelUser = User::findOrFail($request->input('id'));
+    public function destroy($id)
+    {
+    	$ModelUser = User::findOrFail($id);
     	$ModelUser->delete();
+
     	return redirect()->route('AdminUsers')->with('status', 'Пользователь удален!');
     }
 
-    public function loginwith($id){
+    public function loginwith($id)
+    {
         \Auth::loginUsingId($id);
+
         return redirect('/');
     }
 }
