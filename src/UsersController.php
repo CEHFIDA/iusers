@@ -66,7 +66,9 @@ class UsersController extends Controller
         if($request['selected_role'] !== 'not_selected') $ModelUser->attachRole($request->input('selected_role'));
         else $ModelUser->detachRole($ModelUser->role_id);
 
-    	return redirect()->route('AdminUsersEdit', ["id"=>$id])->with('status', 'Профиль обновлен!');
+        flash()->success('Профиль обновлен!');
+
+    	return redirect()->route('AdminUsersEdit', ["id"=>$id]);
     }
 
     public function destroy($id)
@@ -74,7 +76,9 @@ class UsersController extends Controller
     	$ModelUser = User::findOrFail($id);
     	$ModelUser->delete();
 
-    	return redirect()->route('AdminUsers')->with('status', 'Пользователь удален!');
+        flash()->success('Пользователь удален!');
+
+    	return redirect()->route('AdminUsers');
     }
 
     public function loginwith($id)
