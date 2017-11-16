@@ -7,7 +7,7 @@
         <div class="col-lg-4 col-xlg-3 col-md-5">
             <div class="card">
                 <div class="card-block"> 
-                    <small class="text-muted">Email address </small>
+                    <small class="text-muted">Email </small>
                     <h6>{{$edituser->email}}</h6>
                     <small class="text-muted">Дата регистрации </small>
                     <h6>{{$edituser->created_at}}</h6>

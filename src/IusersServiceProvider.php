@@ -13,20 +13,11 @@ class IusersServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
         include __DIR__.'/routes.php';
         $this->app->make('Selfreliance\Iusers\UsersController');
         $this->loadViewsFrom(__DIR__.'/views', 'iusers');
-        
-
-        //Публикуем view
-        // $this->publishes([
-        //     __DIR__.'/views' => resource_path('views/vendor/iusers'),
-        // ]);
-
-
-        //Миграция
         $this->loadMigrationsFrom(__DIR__.'/migrations');
+        $this->loadTranslationsFrom(__DIR__.'/resources/lang', 'translate-users');
     }
 
     /**

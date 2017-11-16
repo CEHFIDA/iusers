@@ -66,7 +66,7 @@ class UsersController extends Controller
         if($request['selected_role'] !== 'not_selected') $ModelUser->attachRole($request->input('selected_role'));
         else $ModelUser->detachRole($ModelUser->role_id);
 
-        flash()->success('Профиль обновлен!');
+        flash()->success( trans('translate-users::user.updatedProfile') );
 
     	return redirect()->route('AdminUsersEdit', ["id"=>$id]);
     }
@@ -76,7 +76,7 @@ class UsersController extends Controller
     	$ModelUser = User::findOrFail($id);
     	$ModelUser->delete();
 
-        flash()->success('Пользователь удален!');
+        flash()->success( trans('translate-users::user.deletedUser') );
 
     	return redirect()->route('AdminUsers');
     }

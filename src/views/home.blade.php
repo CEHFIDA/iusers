@@ -2,10 +2,12 @@
 
 @section('pageTitle', 'Пользователи')
 @section('content')
-    <script>
-    var route = '{{ route('AdminUsersDelete') }}';
-    var message = 'Вы точно хотите удалить данного пользователя?';
-    </script>
+    @push('scripts')
+        <script>
+            var route = '{{ route('AdminUsersDelete') }}';
+            message = 'Вы точно хотите удалить данного пользователя?';
+        </script>
+    @endpush
     <div class="row">
         <!-- Column -->
         <div class="col-12">
