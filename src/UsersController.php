@@ -9,6 +9,14 @@ use Selfreliance\Iusers\Models\UsersLoginLogs;
 
 class UsersController extends Controller
 {
+    public function __construct()
+    {
+        \Blocks::register('countUsers', function(){
+            $count = User::count('id');
+            return view('iusers::block', compact('count'))->render();
+        });
+    }
+
     public function index(Request $request)
     {
     	$keyword = $request->input("searchKey");
@@ -22,7 +30,7 @@ class UsersController extends Controller
         
         $users->appends(['searchKey' => $keyword]);
 
-        return view('iusers::home')->with(["users"=>$users]);
+        return view('iusers::home', compact('users'));
     }
 
     public function edit($id)
@@ -43,12 +51,10 @@ class UsersController extends Controller
             else $list_roles .= '<option value = "'.$role->id.'"> '.$role->name.'</option>';                        
         }
 
-    	return view('iusers::edit')->with([
-            "edituser"=>$user, 
-            "LoginLogs"=>$LoginLogs, 
-            "list_roles"=>$list_roles,
-            "accessible"=>json_decode($admin->accessible_pages)
-        ]);
+        $edituser = $user;
+        $accessible = json_decode($admin->accessible_pages);
+
+    	return view('iusers::edit', compact('edituser', 'LoginLogs', 'list_roles', 'accessible'));
     }
 
     public function update($id, Request $request)
@@ -66,7 +72,7 @@ class UsersController extends Controller
         if($request['selected_role'] !== 'not_selected') $ModelUser->attachRole($request->input('selected_role'));
         else $ModelUser->detachRole($ModelUser->role_id);
 
-        flash()->success( trans('translate-users::user.updatedProfile') );
+        flash()->success('Профиль успешно обновлен');
 
     	return redirect()->route('AdminUsersEdit', ["id"=>$id]);
     }
@@ -76,7 +82,7 @@ class UsersController extends Controller
     	$ModelUser = User::findOrFail($id);
     	$ModelUser->delete();
 
-        flash()->success( trans('translate-users::user.deletedUser') );
+        flash()->success('Пользователь удален');
 
     	return redirect()->route('AdminUsers');
     }
