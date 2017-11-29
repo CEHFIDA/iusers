@@ -9,12 +9,10 @@ use Selfreliance\Iusers\Models\UsersLoginLogs;
 
 class UsersController extends Controller
 {
-    public function __construct()
+    public function registerBlock()
     {
-        \Blocks::register('countUsers', function(){
-            $count = User::count('id');
-            return view('iusers::block', compact('count'))->render();
-        });
+        $count = User::count('id');
+        return view('iusers::block', compact('count'))->render();
     }
 
     public function index(Request $request)
