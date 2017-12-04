@@ -17,6 +17,9 @@ class IusersServiceProvider extends ServiceProvider
         $this->app->make('Selfreliance\Iusers\UsersController');
         $this->loadViewsFrom(__DIR__.'/views', 'iusers');
         $this->loadMigrationsFrom(__DIR__.'/migrations');
+        $this->publishes([
+            __DIR__ . '/config/iusers.php' => config_path('iusers.php')
+        ], 'config');        
     }
 
     /**

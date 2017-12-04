@@ -12,11 +12,7 @@ Install via composer
 composer require selfreliance/iusers
 ```
 
-### Also you can connect the information block
-Edit value blocks in config (config/adminamazing.php)
-```
-'blocks' => [
-    //
-    'countUsers' => 'Selfreliance\IUsers\UsersController@registerBlock',
-]
+Config
+```php
+php artisan vendor:publish --provider=Selfreliance\\iusers\\IusersServiceProvider --force
 ```
