@@ -17,6 +17,7 @@
                         <small class="text-muted">Последний вход </small>
                         <h6>{{$LoginLogs[0]->created_at}}</h6>
                     @endif
+                    <h3><a target="_blank" href="{{route('AdminOperations', ['user_email' => $edituser->email])}}">Операции</a></h3>
                 </div>
             </div>
             <div class="col-sm-12">
@@ -34,6 +35,7 @@
                 <ul class="nav nav-tabs profile-tab" role="tablist">
                     <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#settings" role="tab">Настройки</a> </li>
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#loginlog" role="tab">Логи авторизации</a> </li>
+                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#wallets" role="tab">Кошельки</a> </li>
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
@@ -116,6 +118,39 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="tab-pane" id="wallets" role="tabpanel">
+                        <div class="card-block">
+                            @if ($errors->any())
+                                @foreach ($errors->all() as $error)
+                                    <div class="alert alert-danger">
+                                        {{ $error }}
+                                    </div>
+                                @endforeach
+                            @endif
+                            <form action="{{route('AdminUsersSaveWallet', $edituser->id)}}" method="POST" class="form-horizontal form-material">
+                                @if($wallets)
+                                    @foreach($wallets as $row)
+                                        <div class="form-group">
+                                            <label for="name{{$row->id}}" class="col-md-12">{{$row->title}}, {{$row->currency}}</label>
+                                            <div class="col-md-12">
+                                                <input type="text" name="wallet[{{$row->id}}]" id="name{{$row->id}}" value="{{$row->wallet}}" placeholder="" class="form-control form-control-line">
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
+
+                                {{ csrf_field() }}
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <button class="btn btn-success">Сохранить кошельки</button>
+                                    </div>
+                               </div>
+                            </form>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </div>

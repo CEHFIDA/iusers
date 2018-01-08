@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
 use Selfreliance\Iusers\Models\UsersLoginLogs;
-
+use PaymentSystem;
+use App\Models\Users_Wallet;
 class UsersController extends Controller
 {
     public function registerBlock()
@@ -27,6 +28,13 @@ class UsersController extends Controller
     	})->orderBy('id', 'desc')->paginate(10);
         
         $users->appends(['searchKey' => $keyword]);
+
+        $users->each(function($row){
+            if($row->parent_id > 0){
+                $row->parent_email = User::where('id', $row->parent_id)->value('email');
+            }
+        });
+        
 
         return view('iusers::home', compact('users'));
     }
@@ -52,7 +60,9 @@ class UsersController extends Controller
         $edituser = $user;
         $accessible = json_decode($admin->accessible_pages);
 
-    	return view('iusers::edit', compact('edituser', 'LoginLogs', 'list_roles', 'accessible'));
+        $wallets = PaymentSystem::get_with_wallet($id);
+
+    	return view('iusers::edit', compact('edituser', 'LoginLogs', 'list_roles', 'accessible', 'wallets'));
     }
 
     public function update($id, Request $request)
@@ -90,5 +100,27 @@ class UsersController extends Controller
         \Auth::loginUsingId($id);
 
         return redirect('/');
+    }
+
+    public function save_wallet($id, Request $request){
+        if(count($request->input('wallet')) > 0){
+            foreach($request->input('wallet') as $key=>$value){
+                $res = Users_Wallet::where('user_id', $id)->where('payment_system_id', $key)->first();
+                    
+                if($res){
+                    $res->delete();
+                }
+                if($value != ''){
+                    $ModelUserWallet = new Users_Wallet;
+                    $ModelUserWallet->user_id = $id;
+                    $ModelUserWallet->payment_system_id = $key;
+                    $ModelUserWallet->wallet = $value;
+                    $ModelUserWallet->save();
+                }
+            }
+        }
+
+        flash()->success('Кошельки успешно сохранены');
+        return redirect()->back();
     }
 }

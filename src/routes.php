@@ -6,4 +6,5 @@ Route::group(['prefix' => config('adminamazing.path').'/users', 'middleware' => 
 	Route::put('/{id}', 'selfreliance\iusers\UsersController@update')->name('AdminUsersUpdate');
 	Route::delete('/{id?}', 'selfreliance\iusers\UsersController@destroy')->name('AdminUsersDelete');
 	Route::post('/loginwith/{id}', 'selfreliance\iusers\UsersController@loginwith')->name('AdminUsersLoginWith');
+	Route::post('/save_wallet/{id}', 'selfreliance\iusers\UsersController@save_wallet')->name('AdminUsersSaveWallet');
 });
