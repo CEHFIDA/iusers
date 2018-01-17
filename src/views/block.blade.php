@@ -1,10 +1,41 @@
-<div class="card card-block">
-    <div class="row p-t-10 p-b-10">
-        <div class="col p-r-0">
-            <h1 class="font-light">{{ $count }}</h1>
-            <h6 class="text-muted">Новых клиентов</h6></div>
-            <div class="col text-right align-self-center">
-            <div data-label="30%" class="css-bar m-b-0 css-bar-primary css-bar-20"><i class="mdi mdi-star-circle"></i></div>
+@push('scripts')
+    <script src="{{ asset('vendor/adminamazing/assets/plugins/sparkline/jquery.sparkline.min.js') }}"></script>
+    <script>
+        $(function(){
+            var sparklineLogin2 = function() { 
+                $('#sparklinedash2').sparkline([ {{$imploade_data}}], {
+                    type: 'bar',
+                    height: '100',
+                    barWidth: '4',
+                    resize: true,
+                    barSpacing: '5',
+                    barColor: '#55ce63'
+                });
+            }
+            var sparkResize;
+
+            $(window).resize(function(e) {
+                clearTimeout(sparkResize);
+                sparkResize = setTimeout(sparklineLogin2, 500);
+            });
+            sparklineLogin2();
+        })
+    </script>
+@endpush
+<div style="margin-top: 1.25rem;">
+    <div class="row">
+        <div class="col-8">
+            <span class="display-6">{{$users_today}} 
+                @if($users_yesterday >= $users_today)
+                    <i class="ti-angle-down font-14 text-danger"></i>
+                @else
+                    <i class="ti-angle-up font-14 text-success"></i>
+                @endif
+            </span>
+            <h6>Пользователей сегодня</h6>
+        </div>
+        <div class="col-4 align-self-center text-right p-l-0">
+            <div id="sparklinedash2"></div>
         </div>
     </div>
 </div>

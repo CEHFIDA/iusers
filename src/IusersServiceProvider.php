@@ -18,7 +18,7 @@ class IusersServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/views', 'iusers');
         $this->loadMigrationsFrom(__DIR__.'/migrations');
         $this->publishes([
-            __DIR__ . '/config/iusers.php' => config_path('iusers.php')
+            __DIR__ . '/config/users.php' => config_path('users.php')
         ], 'config');        
     }
 

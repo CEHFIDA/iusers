@@ -8,12 +8,36 @@ use Illuminate\Http\Request;
 use Selfreliance\Iusers\Models\UsersLoginLogs;
 use PaymentSystem;
 use App\Models\Users_Wallet;
+use Hash;
+use Carbon\Carbon;
 class UsersController extends Controller
 {
     public function registerBlock()
     {
+        $days = 8;
+        $users_reg = User::selectRaw('DATE_FORMAT(`created_at`, \'%Y-%m-%d\') as groupDate, COUNT(`id`) as CntByDate')->orderBy('groupDate', 'desc')->limit($days-1)->groupBy('groupDate')->get();
+        $real_users = [];
+        foreach($users_reg as $row){
+            $real_users[$row->groupDate] = $row->CntByDate;
+        }
+
+        $weekago = Carbon::now()->subDays($days);
+        $null_array = [];
+        while ($days > 0) {
+            $weekago->addDays(1);
+            $result = strtolower($weekago->format('Y-m-d'));
+            $null_array[$result] = 0;
+            $days--;
+        }
+        $users_by_date = array_merge($null_array, $real_users);
+        ksort($users_by_date);
+        $imploade_data = implode(", ", $users_by_date);
+        $users_today = $users_by_date[Carbon::now()->format('Y-m-d')];
+        $users_yesterday = $users_by_date[Carbon::now()->subDays(1)->format('Y-m-d')];
+        
+
         $count = User::count('id');
-        return view('iusers::block', compact('count'))->render();
+        return view('iusers::block', compact('count', 'imploade_data', 'users_today', 'users_yesterday'))->render();
     }
 
     public function index(Request $request)
@@ -23,9 +47,10 @@ class UsersController extends Controller
     		if($keyword != ''){
 	    		$query->where('id', 'LIKE', "%$keyword%")
 	    			->orWhere('name', 'LIKE', "%$keyword%")
-	    			->orWhere('email', 'LIKE', "%$keyword%");
+                    ->orWhere('email', 'LIKE', "%$keyword%")
+	    			->orWhere('aff_ref', 'LIKE', "%$keyword%");
     		}
-    	})->orderBy('id', 'desc')->paginate(10);
+    	})->orderBy('id', 'desc')->paginate(20);
         
         $users->appends(['searchKey' => $keyword]);
 
@@ -35,6 +60,9 @@ class UsersController extends Controller
             }
         });
         
+        if(count($users) == 1){
+            return redirect()->route('AdminUsersEdit', ["id"=>$users[0]->id]);
+        }
 
         return view('iusers::home', compact('users'));
     }
@@ -71,14 +99,27 @@ class UsersController extends Controller
 			'name'         => 'required|min:2|max:191',
 			'email'        => 'required|email|unique:users,email,'.$id, 
 	    ]);
-
-    	$ModelUser = User::findOrFail($id);
-    	$ModelUser->name = $request->input('name');
-    	$ModelUser->email = $request->input('email');
+        // dd($request);
+        $ModelUser                   = User::findOrFail($id);
+        $ModelUser->name             = $request->input('name');
+        $ModelUser->email            = $request->input('email');
+        if($request['new_password'] != null){
+            $ModelUser->password = Hash::make($request['new_password']);
+        }
+        $ModelUser->aff_ref          = $request->input('aff_ref');
+        $ModelUser->google2fa_secret = $request->input('google2fa_secret');
+        $ModelUser->google2fa_ts     = $request->input('google2fa_ts');
+        $ModelUser->representative   = ($request->input('representative'))?1:0;
+        $ModelUser->google2fa_status = ($request->input('google2fa_status'))?1:0;
     	$ModelUser->save();
 
-        if($request['selected_role'] !== 'not_selected') $ModelUser->attachRole($request->input('selected_role'));
-        else $ModelUser->detachRole($ModelUser->role_id);
+        if($request['selected_role'] !== 'not_selected') {
+            $ModelUser->attachRole($request->input('selected_role'));
+        }else {
+            if($ModelUser->role_id != '-1'){
+                $ModelUser->detachRole($ModelUser->role_id);
+            }
+        }
 
         flash()->success('Профиль успешно обновлен');
 
@@ -98,8 +139,8 @@ class UsersController extends Controller
     public function loginwith($id)
     {
         \Auth::loginUsingId($id);
-
-        return redirect('/');
+        $to = env('PERSONAL_LINK_CAB', '/');
+        return redirect($to);
     }
 
     public function save_wallet($id, Request $request){

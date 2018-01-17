@@ -70,16 +70,52 @@
                                         <input type="password" id="new_password" name="new_password" value="" class="form-control form-control-line">
                                     </div>
                                 </div>
-                                @if(in_array('adminrole', $accessible))
                                 <div class="form-group">
-                                    <label for="role" class="col-md-12">Изменить роль</label>
+                                    <label for="aff_ref" class="col-md-12">Реферальный суфикс</label>
                                     <div class="col-md-12">
-                                        <select class="custom-select col-12" id="role" name="selected_role">
-                                            <option value = "not_selected">Не выбрано</option>
-                                            {{!! $list_roles !!}}
-                                        </select>
+                                        <input type="text" id="aff_ref" name="aff_ref" value="{{$edituser->aff_ref}}" class="form-control form-control-line">
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="custom-control custom-checkbox">
+                                            <input name="representative" {{($edituser->representative)?'checked':''}} type="checkbox" class="custom-control-input">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Сделать представителем (выше рефка)</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="custom-control custom-checkbox">
+                                            <input name="google2fa_status" {{($edituser->google2fa_status)?'checked':''}} type="checkbox" class="custom-control-input">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Двухфакторная авторизация</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="google2fa_secret" class="col-md-12">2FA секретный ключ</label>
+                                    <div class="col-md-12">
+                                        <input type="text" id="google2fa_secret" name="google2fa_secret" value="{{$edituser->google2fa_secret}}" class="form-control form-control-line">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="google2fa_ts" class="col-md-12">2FA ts</label>
+                                    <div class="col-md-12">
+                                        <input type="text" id="google2fa_ts" name="google2fa_ts" value="{{$edituser->google2fa_ts}}" class="form-control form-control-line">
+                                    </div>
+                                </div>
+                                @if(in_array('adminrole', $accessible))
+                                    <div class="form-group">
+                                        <label for="role" class="col-md-12">Изменить роль</label>
+                                        <div class="col-md-12">
+                                            <select class="custom-select col-12" id="role" name="selected_role">
+                                                <option value = "not_selected">Не выбрано</option>
+                                                {{!! $list_roles !!}}
+                                            </select>
+                                        </div>
+                                    </div>
                                 @endif                    
                                 {{ csrf_field() }}
                                 {{ method_field('PUT') }}
