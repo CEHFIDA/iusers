@@ -107,8 +107,12 @@ class UsersController extends Controller
             $ModelUser->password = Hash::make($request['new_password']);
         }
         $ModelUser->aff_ref          = $request->input('aff_ref');
-        $ModelUser->google2fa_secret = $request->input('google2fa_secret');
-        $ModelUser->google2fa_ts     = $request->input('google2fa_ts');
+        if($request->input('google2fa_secret')){
+            $ModelUser->google2fa_secret = $request->input('google2fa_secret');
+        }
+        if($request->input('google2fa_ts')){
+            $ModelUser->google2fa_ts     = $request->input('google2fa_ts');
+        }
         $ModelUser->representative   = ($request->input('representative'))?1:0;
         $ModelUser->google2fa_status = ($request->input('google2fa_status'))?1:0;
     	$ModelUser->save();
