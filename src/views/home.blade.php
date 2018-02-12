@@ -31,8 +31,8 @@
                                     <tr>
                                         <td>{{$user->id}}</td>
                                         <td>{{$user->name}}</td>
-                                        <td>{{$user->email}}</td>
-                                        <td>{{$user->parent_email}}</td>
+                                        <td><a href="{{ route('AdminUsersEdit', $user->id) }}">{{$user->email}}</a></td>
+                                        <td><a href="{{ route('AdminUsersEdit', $user->parent_id) }}">{{$user->parent_email}}</a></td>
                                         <td>{{$user->created_at}}</td> 
                                         <td class="text-nowrap">
                                             <a href="{{ route('AdminUsersEdit', $user->id) }}" data-toggle="tooltip" data-original-title="Редактировать"> <i class="fa fa-pencil text-inverse m-r-10"></i> </a>

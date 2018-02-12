@@ -7,17 +7,26 @@
         <div class="col-lg-4 col-xlg-3 col-md-5">
             <div class="card">
                 <div class="card-block"> 
-                    <small class="text-muted">Email </small>
-                    <h6>{{$edituser->email}}</h6>
-                    <small class="text-muted">Дата регистрации </small>
-                    <h6>{{$edituser->created_at}}</h6>
-                    <small class="text-muted">Последнее обновление профиля </small>
-                    <h6>{{$edituser->updated_at}}</h6>
-                    @if(count($LoginLogs) > 0)
-                        <small class="text-muted">Последний вход </small>
-                        <h6>{{$LoginLogs[0]->created_at}}</h6>
+                    <h5 class="text-muted">Email </h5>
+                    <h5>{{$edituser->email}}</h5>
+                    
+                    <h5 class="text-muted">Вышестоящий </h5>
+                    @if($edituser->upline)
+                        <h5><a href="{{ route('AdminUsersEdit', $edituser->upline->id) }}">{{$edituser->upline->email}}</a></h5>
+                    @else
+                        <h5>нету</h5>
                     @endif
-                    <h3><a target="_blank" href="{{route('AdminOperations', ['user_email' => $edituser->email])}}">Операции</a></h3>
+                    
+                    <h5 class="text-muted">Дата регистрации </h5>
+                    <h5>{{$edituser->created_at}}</h5>
+                    <h5 class="text-muted">Последнее обновление профиля </h5>
+                    <h5>{{$edituser->updated_at}}</h5>
+                    @if(count($LoginLogs) > 0)
+                        <h5 class="text-muted">Последний вход </h5>
+                        <h5>{{$LoginLogs[0]->created_at}}</h5>
+                    @endif
+                    <h4><a target="_blank" href="{{route('AdminOperations', ['user_email' => $edituser->email])}}">Операции</a></h4>
+                    <h4><a href="{{route('AdminUsersStructure', $edituser->id)}}">Структура</a></h4>
                 </div>
             </div>
             <div class="col-sm-12">

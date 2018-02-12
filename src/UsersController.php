@@ -10,6 +10,9 @@ use PaymentSystem;
 use App\Models\Users_Wallet;
 use Hash;
 use Carbon\Carbon;
+use App\Models\Users_Levels_Structure;
+use App\Models\Deposit;
+use App\Models\Users_History;
 class UsersController extends Controller
 {
     public function registerBlock()
@@ -50,13 +53,16 @@ class UsersController extends Controller
                     ->orWhere('email', 'LIKE', "%$keyword%")
 	    			->orWhere('aff_ref', 'LIKE', "%$keyword%");
     		}
-    	})->orderBy('id', 'desc')->paginate(20);
+    	})->
+        with('upline')->
+        orderBy('id', 'desc')->paginate(20);
         
         $users->appends(['searchKey' => $keyword]);
 
         $users->each(function($row){
             if($row->parent_id > 0){
-                $row->parent_email = User::where('id', $row->parent_id)->value('email');
+                // $row->parent_email = User::where('id', $row->parent_id)->value('email');
+                $row->parent_email = $row->upline->email;
             }
         });
         
@@ -167,5 +173,30 @@ class UsersController extends Controller
 
         flash()->success('Кошельки успешно сохранены');
         return redirect()->back();
+    }
+
+    public function structure($id, $level = 1){
+        $user = User::find($id);
+        
+        $users = Users_Levels_Structure::
+            where('user_id', $id)->
+            where('level', $level)->
+            orderBy('id', 'desc')->
+            with(['info', 'info.upline'])->
+            paginate(20);
+
+        $levels = Users_Levels_Structure::
+            where('user_id', $id)->
+            selectRaw('level, count(id) as count, GROUP_CONCAT(DISTINCT id SEPARATOR ", ") as user_ids')->
+            groupBy('level')->
+            get();
+
+        $levels->each(function($row) use ($id){
+            $ids = explode(',', $row->user_ids);
+            $row->invested = number(Deposit::whereIn('user_id', $ids)->sum('amount_default_currency'),2);
+
+            $row->withdraw = number(Users_History::whereIn('user_id', $ids)->where('type', 'WITHDRAW')->where('status', 'completed')->sum('amount_default_currency'),2);
+        });
+        return view('iusers::structure', compact('user', 'level', 'users', 'levels'));
     }
 }

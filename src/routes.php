@@ -7,4 +7,5 @@ Route::group(['prefix' => config('adminamazing.path').'/users', 'middleware' => 
 	Route::delete('/{id?}', 'selfreliance\iusers\UsersController@destroy')->name('AdminUsersDelete');
 	Route::post('/loginwith/{id}', 'selfreliance\iusers\UsersController@loginwith')->name('AdminUsersLoginWith');
 	Route::post('/save_wallet/{id}', 'selfreliance\iusers\UsersController@save_wallet')->name('AdminUsersSaveWallet');
+	Route::get('/structure/{id}/level/{level?}', 'selfreliance\iusers\UsersController@structure')->name('AdminUsersStructure');
 });
