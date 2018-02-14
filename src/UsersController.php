@@ -187,7 +187,7 @@ class UsersController extends Controller
 
         $levels = Users_Levels_Structure::
             where('user_id', $id)->
-            selectRaw('level, count(id) as count, GROUP_CONCAT(DISTINCT id SEPARATOR ", ") as user_ids')->
+            selectRaw('level, count(id) as count, GROUP_CONCAT(DISTINCT child_id SEPARATOR ", ") as user_ids')->
             groupBy('level')->
             get();
 
