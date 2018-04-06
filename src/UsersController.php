@@ -94,7 +94,7 @@ class UsersController extends Controller
         $edituser = $user;
         $accessible = json_decode($admin->accessible_pages);
 
-        $wallets = PaymentSystem::get_with_wallet($id);
+        $wallets = PaymentSystem::getWithWallet($id);
 
     	return view('iusers::edit', compact('edituser', 'LoginLogs', 'list_roles', 'accessible', 'wallets'));
     }
